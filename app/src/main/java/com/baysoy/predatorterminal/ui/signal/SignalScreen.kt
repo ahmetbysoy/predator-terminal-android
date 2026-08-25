@@ -135,7 +135,7 @@ fun SignalCard(signal: Signal) {
 
             // Progress bar
             LinearProgressIndicator(
-                progress = { signal.score / 10f },
+                progress = signal.score / 10f,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp),
