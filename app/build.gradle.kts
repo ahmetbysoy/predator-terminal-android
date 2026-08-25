@@ -75,8 +75,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     
-    // TradingView Lightweight Charts
-    implementation("com.tradingview:lightweightcharts:3.8.0")
+    // TradingView Lightweight Charts (enable when ready)
+    // implementation("com.tradingview:lightweightcharts:3.8.0")
     
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

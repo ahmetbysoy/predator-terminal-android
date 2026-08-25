@@ -76,16 +76,14 @@ class ChartViewModel : ViewModel() {
                 // Load 24h ticker
                 val ticker = repository.get24hTicker(symbol)
                 _currentPrice.value = ticker.lastPrice
-                _priceChange.value = "${if (ticker.priceChangePercent.toDouble() >= 0) "+" else ""}${ticker.priceChangePercent}%"
-                _isPositive.value = ticker.priceChangePercent.toDouble() >= 0
-                _volume.value = formatNotional(ticker.quoteVolume.toDouble())
+                val changePercent = ticker.priceChangePercent.toDoubleOrNull() ?: 0.0
+                _priceChange.value = "${if (changePercent >= 0) "+" else ""}${ticker.priceChangePercent}%"
+                _isPositive.value = changePercent >= 0
+                _volume.value = formatNotional(ticker.quoteVolume.toDoubleOrNull() ?: 0.0)
                 
                 // Load depth
                 val depth = repository.getDepth(symbol)
                 depthManager.applySnapshot(depth)
-                
-                // Start WebSocket connections
-                startWebSocketConnections(symbol)
                 
             } catch (e: Exception) {
                 _error.value = e.message
@@ -98,32 +96,6 @@ class ChartViewModel : ViewModel() {
     fun switchInterval(interval: String) {
         _currentInterval.value = interval
         loadSymbol(_currentSymbol.value)
-    }
-    
-    private fun startWebSocketConnections(symbol: String) {
-        viewModelScope.launch {
-            // Kline WebSocket
-            repository.connectKline(symbol, _currentInterval.value).collect { message ->
-                // Parse and update klines
-                // This would need proper JSON parsing
-            }
-        }
-        
-        viewModelScope.launch {
-            // Trade WebSocket
-            repository.connectTrade(symbol).collect { message ->
-                // Parse and update price
-                // This would need proper JSON parsing
-            }
-        }
-        
-        viewModelScope.launch {
-            // Depth WebSocket
-            repository.connectDepth(symbol).collect { message ->
-                // Parse and update depth
-                // This would need proper JSON parsing
-            }
-        }
     }
     
     private fun startSignalEngine() {
@@ -153,14 +125,12 @@ class ChartViewModel : ViewModel() {
     
     private fun formatNotional(value: Double): String {
         return when {
-            value >= 1e9 -> "$${(value / 1e9).format(1)}B"
-            value >= 1e6 -> "$${(value / 1e6).format(1)}M"
+            value >= 1e9 -> "$${String.format("%.1f", value / 1e9)}B"
+            value >= 1e6 -> "$${String.format("%.1f", value / 1e6)}M"
             value >= 1e3 -> "$${(value / 1e3).toInt()}K"
             else -> "$${value.toInt()}"
         }
     }
-    
-    private fun Double.format(decimals: Int) = "%.${decimals}f".format(this)
     
     override fun onCleared() {
         super.onCleared()

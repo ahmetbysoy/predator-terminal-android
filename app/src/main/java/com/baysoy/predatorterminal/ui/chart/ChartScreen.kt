@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,12 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.tradingview.lightweightcharts.api.chartApis
-import com.tradingview.lightweightcharts.api.options.models.*
-import com.tradingview.lightweightcharts.api.series.models.*
-import com.tradingview.lightweightcharts.api.series.enums.SeriesType
-import com.tradingview.lightweightcharts.view.ChartsView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +45,6 @@ fun ChartScreen() {
                     Surface(
                         shape = RoundedCornerShape(6.dp),
                         color = Color(0xFF7C3AED).copy(alpha = 0.3f),
-                        border = ButtonDefaults.outlinedButtonBorder
                     ) {
                         Text(
                             text = "SPOT",
@@ -111,7 +103,6 @@ fun ChartScreen() {
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = Color(0xFF12131C).copy(alpha = 0.86f),
-                border = ButtonDefaults.outlinedButtonBorder
             ) {
                 Row(
                     modifier = Modifier.padding(4.dp),
@@ -138,62 +129,34 @@ fun ChartScreen() {
             }
         }
 
-        // Chart
+        // Chart placeholder
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .background(Color(0xFF0D0E16)),
+            contentAlignment = Alignment.Center
         ) {
-            AndroidView(
-                factory = { context ->
-                    ChartsView(context).apply {
-                        api.applyOptions {
-                            layout = layoutOptions {
-                                background = Color.LTGRAY.toIntColor()
-                                textColor = Color.BLACK.toIntColor()
-                            }
-                            grid = gridOptions {
-                                vertLines = GridLineOptions(color = Color(0x0DFFFFFF))
-                                horzLines = GridLineOptions(color = Color(0x0DFFFFFF))
-                            }
-                            rightPriceScale = PriceScaleOptions(
-                                borderColor = Color(0x14FFFFFF)
-                            )
-                            timeScale = TimeScaleOptions(
-                                borderColor = Color(0x14FFFFFF),
-                                timeVisible = true,
-                                secondsVisible = false
-                            )
-                            crosshair = CrosshairOptions(
-                                vertLine = CrosshairLineOptions(
-                                    color = Color(0x737C3AED),
-                                    width = 1,
-                                    style = LineStyle.DASHED
-                                ),
-                                horzLine = CrosshairLineOptions(
-                                    color = Color(0x737C3AED),
-                                    width = 1,
-                                    style = LineStyle.DASHED
-                                )
-                            )
-                        }
-                        api.addCandlestickSeries(
-                            options = CandlestickSeriesOptions(
-                                upColor = Color(0xFF00F59B),
-                                downColor = Color(0xFFFF3358),
-                                borderUpColor = Color(0xFF00F59B),
-                                borderDownColor = Color(0xFFFF3358),
-                                wickUpColor = Color(0xFF00F59B),
-                                wickDownColor = Color(0xFFFF3358)
-                            ),
-                            onSeriesCreated = { series ->
-                                // Load data here
-                            }
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "📈",
+                    fontSize = 48.sp
+                )
+                Text(
+                    text = "Grafik Yükleniyor...",
+                    color = Color(0xFF71717A),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "TradingView Lightweight Charts entegrasyonu",
+                    color = Color(0xFF71717A),
+                    fontSize = 12.sp
+                )
+            }
         }
 
         // Footer info
